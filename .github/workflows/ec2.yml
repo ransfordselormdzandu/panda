@@ -5,6 +5,12 @@ on:
     branches:
       - main  # Changed to "branches" so it actually runs when you push to main
 
+    paths:          # contains files or directories you want to use for this workflow
+      - css/**
+      - images/**
+      - index.html
+      - dockerfile
+
 env:
   TARGET_DIR: home  # Changed to match the variable used below
   EC2_USER: ubuntu
