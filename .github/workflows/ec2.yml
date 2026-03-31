@@ -3,12 +3,11 @@ name: Deploy App to EC2
 on:
   push:
     branches:
-      - main
-      - demo
+      - main  # Changed to "branches" so it actually runs when you push to main
 
 env:
-    TARGET: home
-    EC2_USER: ubuntu
+  TARGET_DIR: home  # Changed to match the variable used below
+  EC2_USER: ubuntu
 
 jobs:
   deploy:
@@ -23,10 +22,11 @@ jobs:
       - name: Deploy to EC2 Server
         uses: easingthemes/ssh-deploy@main
         with:
-          SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
-          REMOTE_HOST: ${{ vars.HOST_DNS }}
-          REMOTE_USER: ${{ env.EC2_USER }}
-          TARGET: ${{ env.TARGET_DIR }}
+          # These MUST be lowercase for this specific action
+          ssh_private_key: ${{ secrets.EC2_SSH_KEY }}
+          remote_host: ${{ vars.HOST_DNS }}
+          remote_user: ${{ env.EC2_USER }}
+          target: ${{ env.TARGET_DIR }}
 
       - name: Executing remote ssh commands using ssh key
         uses: appleboy/ssh-action@master
@@ -37,11 +37,15 @@ jobs:
           script: |
             sudo apt-get -y update
             sudo apt-get install -y apache2
-            sudo systemctl daemon-reload
             sudo systemctl start apache2
             sudo systemctl enable apache2
-            cd home
-            # Remove existing contents of /var/www/html
+            
+            # Navigate to the folder where files were uploaded
+            cd ~/${{ env.TARGET_DIR }}
+            
+            # Clean and move files
             sudo rm -rf /var/www/html/*
-            # Move new files to /var/www/html
-            sudo mv * /var/www/html
+            sudo cp -r . /var/www/html/
+            
+            # Fix permissions so Apache can read the files
+            sudo chown -R www-data:www-data /var/www/html
