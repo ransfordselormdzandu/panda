@@ -4,7 +4,8 @@ on:
   push:
     branches:
       - main
-      
+      - demo
+
 env:
     TARGET: home
     EC2_USER: ubuntu
