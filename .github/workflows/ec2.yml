@@ -2,7 +2,7 @@ name: Simple workflow
 
 on: 
   schedule:
-    - cron: */5 * * * *
+    - "cron: */5 * * * *"
   
 jobs: 
   deploy:
@@ -11,5 +11,5 @@ jobs:
     runs-on: ubuntu-latest
 
     steps: 
-      name: list items
-      run: ls -a
+      - name: list items
+        run: ls -a
