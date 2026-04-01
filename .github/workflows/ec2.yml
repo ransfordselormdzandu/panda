@@ -3,6 +3,7 @@ name: Simple Workflow
 on: 
   schedule:
     - cron: "*/5 * * * *"
+  workflow dispatch: 
   
 jobs: 
   deploy:
